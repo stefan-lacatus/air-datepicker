@@ -371,6 +371,60 @@ export function createDate(date) {
     return resultDate;
 }
 
+/**
+ * Creates and returns a `Date` object that represents the start of the interval of a
+ * type that contains the specified date.
+ * @param {Date} date - the date for which to obtain the interval start
+ * @param {string} type - the interval type
+ * @param {Date} - the interval start
+ */
+export function getIntervalStartDate(date, type) {
+    const endDate = new Date(date);
+    switch (type) {
+        case consts.years:
+            // For year, set the month to january
+            endDate.setFullYear(endDate.getFullYear(), 0);
+        // eslint-disable-next-line no-fallthrough
+        case consts.months:
+            // For month and year, set the day to the first day of the month
+            endDate.setFullYear(endDate.getFullYear(), endDate.getMonth(), 1);
+        // eslint-disable-next-line no-fallthrough
+        case consts.days:
+        default:
+            // For day and all other views, set the time to the beginning of the day
+            endDate.setHours(0, 0, 0, 0);
+    }
+
+    return endDate;
+}
+
+/**
+ * Creates and returns a `Date` object that represents the end of the interval of a
+ * type that contains the specified date.
+ * @param {Date} date - the date for which to obtain the interval end
+ * @param {string} type - the interval type
+ * @returns {Date} - the interval end
+ */
+export function getIntervalEndDate(date, type) {
+    const endDate = new Date(date);
+    switch (type) {
+        case consts.years:
+            // For year, set the month to december
+            endDate.setFullYear(endDate.getFullYear(), 11);
+        // eslint-disable-next-line no-fallthrough
+        case consts.months:
+            // For month and year, set the day to the last day of the month
+            endDate.setFullYear(endDate.getFullYear(), endDate.getMonth() + 1, 0);
+        // eslint-disable-next-line no-fallthrough
+        case consts.days:
+        default:
+            // For day and all other views, set the time to the end of the day
+            endDate.setHours(23, 59, 59, 999);
+    }
+
+    return endDate;
+}
+
 export function getWordBoundaryRegExp(sign) {
     let symbols = '\\s|\\.|-|/|\\\\|,|\\$|\\!|\\?|:|;';
 

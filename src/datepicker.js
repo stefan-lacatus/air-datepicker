@@ -7,6 +7,8 @@ import {
     deepMerge,
     getDecade,
     getEl,
+    getIntervalEndDate,
+    getIntervalStartDate,
     getParsedDate,
     getWordBoundaryRegExp,
     insertAfter,
@@ -535,6 +537,13 @@ export default class Datepicker {
                         this.rangeDateTo = this.rangeDateFrom;
                         this.rangeDateFrom = date;
                     }
+
+                    // If time selection is disabled, ensure that the ranges represent the start and end
+                    // of their intervals
+                    if (!this.opts.timepicker) {
+                        this.rangeDateFrom = getIntervalStartDate(this.rangeDateFrom, this.opts.minView);
+                        this.rangeDateTo = getIntervalEndDate(this.rangeDateTo, this.opts.minView);
+                    }
                     this.selectedDates = [this.rangeDateFrom, this.rangeDateTo];
                     break;
                 case 2:
@@ -924,11 +933,17 @@ export default class Datepicker {
                 this.focusDate = new Date(this.focusDate);
             }
             if (isDateBigger(selectedDate, this.focusDate)) {
-                this.rangeDateTo =  this.selectedDates[0];
+                this.rangeDateTo = this.selectedDates[0];
                 this.rangeDateFrom = this.focusDate;
             } else {
                 this.rangeDateTo = this.focusDate;
                 this.rangeDateFrom = this.selectedDates[0];
+            }
+
+            // If time is not enabled, set the dates to the interval ranges
+            if (!this.opts.timepicker) {
+                this.rangeDateFrom = getIntervalStartDate(this.rangeDateFrom, this.opts.minView);
+                this.rangeDateTo = getIntervalEndDate(this.rangeDateTo, this.opts.minView);
             }
         }
     }
